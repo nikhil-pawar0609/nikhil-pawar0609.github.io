@@ -1,0 +1,52 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Top from '../components/Top.astro';
+import Figures from '../components/Figures.astro';
+import Work from '../components/Work.astro';
+import Slip from '../components/Slip.astro';
+import Record from '../components/Record.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base>
+  <a class="skip" href="#main">Skip to content</a>
+  <Nav />
+  <main id="main">
+    <Top />
+    <Figures />
+    <Work />
+    <Slip />
+    <Record />
+    <Contact />
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  // Reveal each section's parts once, when their top passes 90% of the screen. Anything a fast
+  // scroll or a jump from the navigation skipped over is above that line too, so it shows.
+  const pending = new Set(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+  let queued = false;
+  const sweep = () => {
+    queued = false;
+    const line = innerHeight * 0.9;
+    for (const el of pending) {
+      if (el.getBoundingClientRect().top < line) {
+        el.classList.add('is-in');
+        pending.delete(el);
+      }
+    }
+    if (!pending.size) removeEventListener('scroll', onScroll);
+  };
+  const onScroll = () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(sweep);
+    }
+  };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll, { passive: true });
+  sweep();
+</script>

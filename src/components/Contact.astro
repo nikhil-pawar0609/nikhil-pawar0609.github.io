@@ -1,0 +1,80 @@
+---
+import { person } from '../data/site';
+const linkedin = person.linkedin.replace('https://www.', '');
+const github = person.github.replace('https://', '');
+---
+
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <h2 class="contact__prompt" id="contact-title" data-reveal>
+    <span class="contact__soft">Hiring for 2027?</span>
+    <span>Tell me about the role.</span>
+  </h2>
+  <form class="ask" action={`mailto:${person.email}`} method="get" enctype="text/plain" data-ask data-email={person.email} data-reveal="2">
+    <label class="sr-only" for="role">Role or team you are hiring for</label>
+    <input class="ask__field" id="role" name="subject" type="text" autocomplete="off" placeholder="Role or team, e.g. platform engineering intern" required />
+    <button class="ask__go" type="submit" aria-label="Write the email">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"></path></svg>
+    </button>
+  </form>
+  <p class="contact__next" data-reveal="2" data-ask-next>This opens your email app with a short note to me.</p>
+
+  <dl class="contact__rows" data-reveal="3">
+    <div><dt>Email</dt><dd><a class="link" href={`mailto:${person.email}`}>{person.email}</a></dd></div>
+    <div><dt>LinkedIn</dt><dd><a class="link" href={person.linkedin}>{linkedin}</a></dd></div>
+    <div><dt>GitHub</dt><dd><a class="link" href={person.github}>{github}</a></dd></div>
+    <div><dt>Based in</dt><dd>{person.location}, open to relocating</dd></div>
+  </dl>
+</section>
+
+<style>
+  .contact { padding: calc(var(--section) * 0.85) var(--margin) calc(var(--section) * 0.75); display: grid; justify-items: start; padding-left: max(var(--margin), 22vw); background: var(--surface); }
+  .contact > * { width: min(34rem, 100%); }
+  .contact__prompt { display: grid; font-size: var(--step-lead); line-height: 1.25; font-weight: 500; letter-spacing: -0.01em; }
+  .contact__soft { color: var(--muted); }
+  .ask { position: relative; margin-top: 1.75rem; }
+  .ask__field {
+    width: 100%; height: 4rem; padding: 0 4.25rem 0 1.25rem;
+    background: var(--paper); border: 0; border-radius: var(--radius);
+    font-size: var(--step-body); color: var(--ink);
+  }
+  .ask__field::placeholder { color: var(--muted); opacity: 1; }
+  .ask__field:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .ask__go {
+    position: absolute; right: 0.5rem; top: 50%; translate: 0 -50%;
+    width: 2.75rem; height: 2.75rem; display: grid; place-items: center;
+    background: var(--ink); color: var(--paper);
+    transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease;
+  }
+  .ask__go:active { transform: scale(0.94); }
+  @media (hover: hover) and (pointer: fine) { .ask__go:hover { background: #000; } }
+  .contact__next { margin-top: 1rem; font-size: var(--step-small); color: var(--muted); }
+  .contact__rows { margin-top: 4.5rem; display: grid; gap: 0.75rem; font-size: var(--step-small); }
+  .contact__rows div { display: grid; grid-template-columns: 6.5rem 1fr; gap: 1rem; }
+  .contact__rows dt { color: var(--muted); }
+  .contact__rows dd { overflow-wrap: anywhere; }
+  .contact__rows a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
+  @media (max-width: 40em) {
+    .contact { padding-left: var(--margin); }
+    .contact__rows div { grid-template-columns: 1fr; gap: 0.1rem; }
+    .contact__rows { gap: 1.25rem; }
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-ask]');
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const role = new FormData(form).get('subject')?.toString().trim() ?? '';
+    if (!role) {
+      form.querySelector('input')!.value = '';
+      form.reportValidity();
+      return;
+    }
+    const subject = `Hiring: ${role}`;
+    const body = `Hi Nikhil,\n\nI’m hiring for ${role}. \n\n`;
+    window.location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const next = document.querySelector('[data-ask-next]');
+    if (next) next.textContent = `If no email app opened, write to ${form.dataset.email}.`;
+  });
+</script>

@@ -1,0 +1,81 @@
+---
+import { change } from '../data/site';
+const dots = '· '.repeat(80);
+---
+
+<section class="change" id="change" aria-labelledby="change-title">
+  <div class="change__words">
+    <h2 class="change__title" id="change-title" data-reveal>{change.heading}</h2>
+    <p class="change__intro" data-reveal="2">{change.intro}</p>
+    <p class="change__repo" data-reveal="3"><a class="link" href="https://github.com/aimsotrash/homelab-infra">homelab-infra on GitHub</a></p>
+  </div>
+
+  <div class="slip" data-reveal="2">
+    <ol class="slip__stages">
+      {change.stages.map((stage) => (
+        <li>
+          <h3 class="slip__when">{stage.when}</h3>
+          <ul class="slip__rows">
+            {stage.rows.map((row) => (
+              <li class="slip__row">
+                <span class="slip__what">{row.what}</span>
+                <span class="slip__dots" aria-hidden="true">{dots}</span>
+                <span class="slip__where">{row.where}</span>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+    <p class="slip__result">
+      <span>{change.result.what}</span>
+      <span class="slip__total nums">{change.result.where}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .change {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); align-items: start;
+    padding: var(--section) var(--margin);
+    background: var(--ink); color: var(--paper);
+  }
+  .change__words { grid-column: 1 / 6; display: grid; gap: 1.5rem; position: sticky; top: 14vh; }
+  .change__title { font-size: var(--step-head); line-height: 1.02; letter-spacing: -0.035em; font-weight: 400; max-width: 11ch; }
+  .change__intro { max-width: 32ch; color: var(--paper); }
+  .change__repo a { display: inline-flex; align-items: center; min-height: 2.75rem; font-weight: 500; }
+
+  .slip {
+    grid-column: 7 / 13; max-width: 35rem; width: 100%; min-width: 0;
+    background: var(--paper); color: var(--ink);
+    padding: 2rem 1.75rem 3.25rem;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 97.5% calc(100% - 12px), 95% 100%, 92.5% calc(100% - 12px), 90% 100%, 87.5% calc(100% - 12px), 85% 100%, 82.5% calc(100% - 12px), 80% 100%, 77.5% calc(100% - 12px), 75% 100%, 72.5% calc(100% - 12px), 70% 100%, 67.5% calc(100% - 12px), 65% 100%, 62.5% calc(100% - 12px), 60% 100%, 57.5% calc(100% - 12px), 55% 100%, 52.5% calc(100% - 12px), 50% 100%, 47.5% calc(100% - 12px), 45% 100%, 42.5% calc(100% - 12px), 40% 100%, 37.5% calc(100% - 12px), 35% 100%, 32.5% calc(100% - 12px), 30% 100%, 27.5% calc(100% - 12px), 25% 100%, 22.5% calc(100% - 12px), 20% 100%, 17.5% calc(100% - 12px), 15% 100%, 12.5% calc(100% - 12px), 10% 100%, 7.5% calc(100% - 12px), 5% 100%, 2.5% calc(100% - 12px), 0 100%);
+    font-size: var(--step-body); font-variant-numeric: tabular-nums;
+  }
+  .slip__stages { display: grid; gap: 1.75rem; }
+  .slip__when { font-size: var(--step-body); font-weight: 600; margin-bottom: 0.6rem; }
+  .slip__rows { display: grid; gap: 0.45rem; }
+  .slip__row { display: flex; align-items: baseline; gap: 0.5rem; min-width: 0; }
+  .slip__what { flex: 0 1 auto; min-width: 0; }
+  .slip__dots { flex: 1 1 0; min-width: 1.5rem; overflow: hidden; white-space: nowrap; color: var(--muted); letter-spacing: 0.08em; }
+  .slip__where, .slip__total { flex: 0 0 auto; white-space: nowrap; }
+  .slip__where { color: var(--muted); }
+  .slip__result {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    min-height: 2.75rem; margin: 2rem -1.75rem 0; padding: 0.6rem 1.75rem;
+    background: var(--ink); color: var(--paper); font-weight: 500;
+  }
+
+  @media (max-width: 63.99em) {
+    .change { display: block; padding-inline: var(--margin); }
+    .change__words { position: static; margin-bottom: 2.5rem; }
+    .slip { max-width: 36rem; padding-inline: 1.25rem; }
+    .slip__result { margin-inline: -1.25rem; padding-inline: 1.25rem; }
+  }
+  @media (max-width: 30em) {
+    .slip__row { flex-wrap: wrap; }
+    .slip__what { flex-basis: 100%; }
+    .slip__dots { display: none; }
+    .slip__where { font-size: var(--step-small); }
+  }
+</style>

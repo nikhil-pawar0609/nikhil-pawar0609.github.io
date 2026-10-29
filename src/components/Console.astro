@@ -1,0 +1,242 @@
+---
+// A replay of self-healing-infra, timed from its Terraform: a health check every minute, an
+// alarm on the minimum over 60 seconds, missing data treated as breaching. Without scripting
+// the log shows one recorded incident; with it, the panel runs on the visitor's own clock.
+const incident = [
+  { at: '+0:00', text: 'nginx stopped', tone: '' },
+  { at: '+0:34', text: 'Health check: nginx inactive, NginxRunning 0', tone: '' },
+  { at: '+1:00', text: 'nginx-down: minimum 0 is below 1, ALARM', tone: 'alarm' },
+  { at: '+1:01', text: 'Alarm action invokes self-healing-lambda', tone: '' },
+  { at: '+1:02', text: 'SSM Run Command: systemctl start nginx', tone: '' },
+  { at: '+1:34', text: 'Health check: nginx active, NginxRunning 1', tone: '' },
+  { at: '+2:00', text: 'nginx-down back to OK. No SSH, no one paged.', tone: 'ok' },
+];
+---
+
+<div class="console" data-ui data-console role="group" aria-labelledby="console-title" translate="no">
+  <div class="console__head">
+    <p class="console__title" id="console-title">self-healing-infra</p>
+    <p class="console__state" data-console-state data-state="ok">
+      <span class="console__lamp" aria-hidden="true"></span>
+      <span data-console-state-text>OK</span>
+    </p>
+  </div>
+  <p class="console__sub">nginx on EC2, watched by the alarm nginx-down</p>
+
+  <figure class="console__chart">
+    <div class="console__plot">
+      <svg viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true">
+        <line class="console__level" x1="0" x2="300" y1="18" y2="18"></line>
+        <line class="console__level" x1="0" x2="300" y1="82" y2="82"></line>
+        <path class="console__line" data-console-line d="M0 18 H300"></path>
+      </svg>
+      <span class="console__tick console__tick--one" aria-hidden="true">1</span>
+      <span class="console__tick console__tick--zero" aria-hidden="true">0</span>
+    </div>
+    <figcaption>
+      NginxRunning, one point a minute. The alarm fires when the minimum over 60&nbsp;seconds drops below 1,
+      and missing data counts as breaching.
+    </figcaption>
+  </figure>
+
+  <ol class="console__log nums" data-console-log>
+    {incident.map((line) => (
+      <li data-tone={line.tone || undefined}><span class="console__time">{line.at}</span><span>{line.text}</span></li>
+    ))}
+  </ol>
+  <p class="sr-only" aria-live="polite" data-console-live></p>
+
+  <div class="console__foot" data-console-foot hidden>
+    <button type="button" class="console__button" data-console-stop>Stop nginx</button>
+    <p class="console__note">A replay in your browser. One minute here takes two seconds.</p>
+  </div>
+</div>
+
+<style>
+  .console {
+    --rule: color-mix(in srgb, var(--ink) 14%, transparent);
+    width: min(31rem, 100%);
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1rem, 2.2vw, 1.5rem);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: var(--step-small);
+    line-height: 1.45;
+  }
+  .console__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .console__title { font-size: var(--step-body); font-weight: 600; }
+  .console__state { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; color: var(--accent-text); transition: color var(--t-ui) ease; }
+  .console__state[data-state='alarm'] { color: var(--alarm); }
+  .console__lamp { width: 0.625rem; height: 0.625rem; border-radius: 50%; background: currentColor; }
+  .console__sub { margin-top: -0.7rem; color: var(--muted); }
+
+  .console__chart { display: grid; gap: 0.5rem; }
+  .console__plot { position: relative; padding-left: 1.1rem; }
+  .console__plot svg { width: 100%; height: clamp(5.5rem, 13svh, 8rem); overflow: visible; }
+  .console__level { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 3 5; vector-effect: non-scaling-stroke; }
+  .console__line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; vector-effect: non-scaling-stroke; transition: stroke var(--t-ui) ease; }
+  .console[data-alarm] .console__line { stroke: var(--alarm); }
+  .console__tick { position: absolute; left: 0; font-size: 0.8125rem; color: var(--muted); line-height: 1; transform: translateY(-50%); }
+  .console__tick--one { top: 18%; }
+  .console__tick--zero { top: 82%; }
+  .console__chart figcaption { font-size: var(--step-small); color: var(--muted); }
+
+  .console__log { display: grid; gap: 0.3rem; padding-top: 0.9rem; border-top: 1px solid var(--rule); min-height: 7.5rem; align-content: start; } /* taste-skill-ignore: inside the data-ui console */
+  .console__log :global(li) { display: grid; grid-template-columns: 4.6rem 1fr; gap: 0.6rem; }
+  .console__log :global(.console__time) { color: var(--muted); }
+  .console__log :global(li[data-tone='alarm'] span:last-child) { color: var(--alarm); font-weight: 500; }
+  .console__log :global(li[data-tone='ok'] span:last-child) { color: var(--accent-text); font-weight: 500; }
+
+  .console__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; }
+  .console__foot[hidden] { display: none; }
+  .console__button {
+    min-height: 2.75rem; padding: 0 1.1rem;
+    background: var(--ink); color: var(--paper); font-weight: 500;
+    transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease, color var(--t-hover) ease;
+  }
+  .console__button:active { transform: scale(0.97); }
+  .console__button[aria-disabled='true'] { background: var(--surface); color: var(--muted); cursor: progress; }
+  .console__note { flex: 1 1 12rem; font-size: var(--step-small); color: var(--muted); }
+  @media (hover: hover) and (pointer: fine) {
+    .console__button:not([aria-disabled='true']):hover { background: #000; }
+  }
+  /* Compact on phones and tablets, and on short desktop screens where the name below needs the room. */
+  @media (max-width: 63.99em), (max-height: 47.5em) {
+    .console { gap: 0.75rem; }
+    .console__plot svg { height: 4.5rem; }
+    .console__log { min-height: 0; }
+    .console__log :global(li:nth-last-child(n + 4)) { display: none; }
+  }
+  @media (max-width: 40em), (min-width: 64em) and (max-height: 47.5em) {
+    .console__chart figcaption { display: none; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-console]');
+  if (root) start(root);
+
+  function start(root: HTMLElement) {
+    const foot = root.querySelector<HTMLElement>('[data-console-foot]')!;
+    const button = root.querySelector<HTMLButtonElement>('[data-console-stop]')!;
+    const state = root.querySelector<HTMLElement>('[data-console-state]')!;
+    const stateText = root.querySelector<HTMLElement>('[data-console-state-text]')!;
+    const log = root.querySelector<HTMLOListElement>('[data-console-log]')!;
+    const live = root.querySelector<HTMLElement>('[data-console-live]')!;
+    const line = root.querySelector<SVGPathElement>('[data-console-line]')!;
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+    const POINTS = 30;
+    const TICK = 2000; // one simulated minute
+    const values: number[] = Array(POINTS).fill(1);
+    const clock = new Date();
+    clock.setSeconds(0, 0);
+
+    let up = true;
+    let busy = false;
+    let onScreen = true;
+    let timer = 0;
+
+    const hhmm = (d: Date, seconds = false) =>
+      [d.getHours(), d.getMinutes(), ...(seconds ? [d.getSeconds()] : [])].map((n) => String(n).padStart(2, '0')).join(':');
+
+    const y = (v: number) => (v ? 18 : 82);
+    const draw = () => {
+      const dx = 300 / (POINTS - 1);
+      let d = `M0 ${y(values[0])}`;
+      for (let i = 1; i < POINTS; i++) d += ` L${(i * dx).toFixed(2)} ${y(values[i - 1])} L${(i * dx).toFixed(2)} ${y(values[i])}`;
+      line.setAttribute('d', d);
+    };
+
+    const push = (v: number) => {
+      values.shift();
+      values.push(v);
+      draw();
+      // A flat line looks the same after a shift, so it only slides while a dip is in view.
+      if (!still.matches && values.some((v) => v !== values[0])) {
+        const dx = 300 / (POINTS - 1);
+        line.animate([{ transform: `translateX(${dx}px)` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+      }
+    };
+
+    const say = (time: string, text: string, tone = '') => {
+      const li = document.createElement('li');
+      if (tone) li.dataset.tone = tone;
+      const t = document.createElement('span');
+      t.className = 'console__time';
+      t.textContent = time;
+      const s = document.createElement('span');
+      s.textContent = text;
+      li.append(t, s);
+      log.append(li);
+      while (log.children.length > 7) log.firstElementChild!.remove();
+    };
+
+    const setState = (alarm: boolean) => {
+      state.dataset.state = alarm ? 'alarm' : 'ok';
+      stateText.textContent = alarm ? 'ALARM' : 'OK';
+      root.toggleAttribute('data-alarm', alarm);
+    };
+
+    // The idle loop: one health check a minute, drawn as one more point on the chart.
+    const tick = () => {
+      clock.setMinutes(clock.getMinutes() + 1);
+      push(up ? 1 : 0);
+    };
+    const run = () => {
+      clearInterval(timer);
+      if (!busy && onScreen && !document.hidden && !still.matches) timer = window.setInterval(tick, TICK);
+    };
+
+    // One incident, timed from the Terraform: stopped 26 s into a minute, so the next check
+    // reports 0 at +0:34 and the alarm's 60 s period closes at +1:00.
+    const incident: { wait: number; sim: number; text: string; tone?: string; act?: () => void }[] = [
+      { wait: 0, sim: 0, text: 'You stopped nginx', act: () => { up = false; } },
+      { wait: 1300, sim: 34, text: 'Health check: nginx inactive, NginxRunning 0', act: () => push(0) },
+      { wait: 2600, sim: 60, text: 'nginx-down: minimum 0 is below 1, ALARM', tone: 'alarm', act: () => setState(true) },
+      { wait: 3700, sim: 61, text: 'Alarm action invokes self-healing-lambda' },
+      { wait: 4800, sim: 62, text: 'SSM Run Command: systemctl start nginx', act: () => { up = true; } },
+      { wait: 6200, sim: 94, text: 'Health check: nginx active, NginxRunning 1', act: () => push(1) },
+      { wait: 7600, sim: 120, text: 'nginx-down back to OK. No SSH, no one paged.', tone: 'ok', act: () => setState(false) },
+    ];
+
+    button.addEventListener('click', () => {
+      if (busy) return;
+      busy = true;
+      clearInterval(timer);
+      live.replaceChildren();
+      button.setAttribute('aria-disabled', 'true');
+      const t0 = new Date(clock.getTime() + 26_000);
+      for (const step of incident) {
+        window.setTimeout(() => {
+          const at = new Date(t0.getTime() + step.sim * 1000);
+          step.act?.();
+          say(hhmm(at, true), step.text, step.tone);
+          live.append(Object.assign(document.createElement('p'), { textContent: step.text }));
+        }, step.wait);
+      }
+      window.setTimeout(() => {
+        clock.setTime(t0.getTime() + 120_000);
+        clock.setSeconds(0, 0);
+        busy = false;
+        button.removeAttribute('aria-disabled');
+        button.textContent = 'Stop nginx again';
+        run();
+      }, incident[incident.length - 1].wait + 400);
+    });
+
+    // Start from a calm state on the visitor's clock.
+    log.replaceChildren();
+    const now = hhmm(clock);
+    say(now, 'nginx serving, NginxRunning 1');
+    say(now, 'nginx-down is OK', 'ok');
+    draw();
+    foot.hidden = false;
+
+    new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; run(); }).observe(root);
+    document.addEventListener('visibilitychange', run);
+    still.addEventListener('change', run);
+    run();
+  }
+</script>

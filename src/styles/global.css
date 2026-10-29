@@ -1,0 +1,117 @@
+/* Tokens: the dealt "Rose grey, green" palette (muted darkened one step and a text green added
+   so every text pairing passes WCAG AA), IBM Plex Sans in five steps, square corners. */
+:root {
+  --bg: #ebe5e3;
+  --surface: #e1dad7;
+  --paper: #f6f2f0;
+  --ink: #2b2622;
+  --muted: #625955;
+  --accent: #0f7d45;
+  --accent-text: #0b6b3a;
+  --accent-ink: #ffffff;
+  --alarm: #a8322b;
+
+  --font: 'IBM Plex Sans Variable', 'IBM Plex Sans', system-ui, sans-serif;
+
+  --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --step-body: 1.0625rem;
+  --step-lead: clamp(1.375rem, 1.2rem + 0.6vw, 1.75rem);
+  --step-head: clamp(2.25rem, 1.2rem + 3.6vw, 4rem);
+
+  --margin: clamp(1rem, 2.2vw, 2rem);
+  --gutter: clamp(1rem, 2vw, 2rem);
+  --section: clamp(7.5rem, 12vw, 12rem);
+  --radius: 0;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --t-press: 140ms;
+  --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-reveal: 800ms;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: auto; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-body);
+  line-height: 1.55;
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, p, figure, blockquote, ul, ol, dl, dd { margin: 0; }
+ul[class], ol[class] { padding: 0; list-style: none; }
+img, video, svg, canvas { display: block; max-width: 100%; }
+img, video { height: auto; }
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; }
+:target { scroll-margin-top: 2rem; }
+::selection { background: var(--ink); color: var(--paper); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* On the dark grounds the green ring falls under 3:1, so it turns paper there. */
+.change :focus-visible, .footer :focus-visible { outline-color: var(--paper); }
+
+h1, h2, h3 { font-weight: 500; text-wrap: balance; hyphens: none; }
+p { text-wrap: pretty; }
+.nums { font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Section headings: one modest size; the large type is kept for the name, the project names,
+   the figures and the change slip. */
+.heading { font-size: var(--step-lead); line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; }
+
+.skip {
+  position: absolute; left: var(--margin); top: 0; z-index: 50;
+  padding: 0.6rem 0.9rem; background: var(--ink); color: var(--paper);
+  transform: translateY(-120%); transition: transform var(--t-ui) var(--ease-out);
+}
+.skip:focus-visible { transform: none; }
+
+/* Controls: square, flat, one fill per button. */
+.button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 3rem; padding: 0 1.4rem;
+  background: var(--ink); color: var(--paper);
+  border-radius: var(--radius); text-decoration: none; white-space: nowrap; font-weight: 500;
+  transition: transform var(--t-press) var(--ease-out), background-color var(--t-hover) ease;
+}
+.button:active { transform: scale(0.97); }
+.button--go { background: var(--accent); color: var(--accent-ink); }
+.link {
+  text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-underline-offset: 0.22em; text-decoration-thickness: 0.07em;
+  transition: text-decoration-color var(--t-hover) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover { background-color: #000; }
+  .button--go:hover { background-color: var(--accent-text); }
+  .link:hover { text-decoration-color: currentColor; }
+}
+
+/* Entrances: hidden only when scripting runs and motion is welcome; a section's parts rise in
+   order (heading, text, picture). Nothing above the fold waits for scroll. Scroll entrances
+   run on wide screens only; phones and tablets get the content at once. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 64em) {
+  .js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity 700ms var(--ease-out), transform 900ms var(--ease-out); }
+  .js [data-reveal].is-in, .js [data-reveal]:focus-within { opacity: 1; transform: none; }
+  .js [data-reveal='2'] { transition-delay: 80ms; }
+  .js [data-reveal='3'] { transition-delay: 160ms; }
+  .js [data-reveal='4'] { transition-delay: 240ms; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-rise] { opacity: 0; transform: translateY(18px); animation: rise var(--t-reveal) var(--ease-out) forwards; }
+  .js [data-rise='2'] { animation-delay: 90ms; }
+  .js [data-rise='3'] { animation-delay: 180ms; }
+  .js [data-rise='4'] { animation-delay: 270ms; }
+}
+@keyframes rise { to { opacity: 1; transform: none; } }

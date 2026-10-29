@@ -1,0 +1,105 @@
+---
+import { Picture } from 'astro:assets';
+import Drawing from './Drawing.astro';
+import { projects } from '../data/site';
+---
+
+<section class="work" id="work" aria-labelledby="work-title">
+  <h2 class="heading work__title" id="work-title" data-reveal>Projects</h2>
+  <ol class="work__list" data-work>
+    {projects.map((p, i) => (
+      <li class="work__item" data-work-item data-active={i === 0 ? '' : undefined}>
+        <h3 class="work__name" translate="no" data-reveal><a href={p.code}>{p.name}</a></h3>
+        <div class="work__panel">
+          <div class="work__frame">
+            <figure class="work__picture" data-reveal="2">
+              {p.image ? (
+                <Picture
+                  src={p.image}
+                  formats={['avif', 'webp']}
+                  widths={[480, 720, 960, 1280]}
+                  sizes="(min-width: 64em) 36vw, 100vw"
+                  alt={p.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <Drawing kind={p.drawing!} label={p.alt} />
+              )}
+            </figure>
+            <p class="work__kind">{p.kind}{p.note && p.note !== 'Work in progress' ? `. ${p.note}` : ''}</p>
+            <p class="work__summary">{p.summary}</p>
+            <p class="work__stack">{p.stack}</p>
+            <p class="work__links">
+              <a class="link" href={p.code}>Code<span class="sr-only"> for {p.name}</span></a>
+              {p.live && <a class="link" href={p.live}>Live demo<span class="sr-only"> of {p.name}</span></a>}
+              {p.tryIt && <a class="link" href={p.tryIt}>Try it at the top<span class="sr-only"> of this page</span></a>}
+            </p>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .work { padding: var(--section) var(--margin); }
+  .work__title { margin-bottom: 3rem; }
+  .work__list { display: grid; gap: 4.5rem; }
+  .work__item { display: grid; gap: 0.6rem; }
+  .work__name { font-size: var(--step-head); font-weight: 400; line-height: 1; letter-spacing: -0.035em; }
+  .work__name a { text-decoration: none; color: inherit; }
+  .work__kind { font-size: var(--step-small); color: var(--muted); }
+  .work__panel, .work__frame { display: contents; }
+  .work__picture { order: -1; margin-bottom: 1rem; background: var(--surface); aspect-ratio: 4 / 3; overflow: clip; }
+  .work__picture :global(img), .work__picture :global(svg) { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .work__summary { max-width: 60ch; }
+  .work__stack { font-size: var(--step-small); color: var(--muted); max-width: 60ch; }
+  .work__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+  .work__links a { display: inline-flex; align-items: center; min-height: 2.75rem; min-width: 2.75rem; font-weight: 500; }
+
+  /* Wider screens without the index (tablets, touch, no scripting): picture left, words right. */
+  @media (min-width: 48em) {
+    .work__list { gap: 5rem; }
+    .work__item { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(1.5rem, 3vw, 3rem); align-content: start; }
+    .work__name, .work__kind, .work__summary, .work__stack, .work__links { grid-column: 2; }
+    .work__picture { grid-column: 1; grid-row: 1 / span 5; margin: 0; }
+  }
+
+  /* Desktop with scripting and a mouse: the names are the index, and one frame holds the active
+     project. Touch screens keep the stacked list. Inactive panels stay in the accessibility tree. */
+  @media (min-width: 64em) and (hover: hover) and (pointer: fine) {
+    :global(.js) .work__list { position: relative; display: block; }
+    :global(.js) .work__item { display: block; padding-block: 0.6rem; width: 58%; }
+    :global(.js) .work__kind { margin-bottom: -0.4rem; }
+    :global(.js) .work__name a { color: var(--muted); transition: color var(--t-hover) ease; }
+    :global(.js) .work__item[data-active] .work__name a { color: var(--ink); }
+    :global(.js) .work__panel {
+      display: block; position: absolute; top: 0; bottom: 0; right: 0; width: min(36%, 38rem);
+      opacity: 0; pointer-events: none; transition: opacity 200ms ease;
+    }
+    :global(.js) .work__item[data-active] .work__panel { opacity: 1; pointer-events: auto; }
+    :global(.js) .work__frame { display: grid; gap: 0.9rem; position: sticky; top: 12vh; }
+    :global(.js) .work__frame > * { grid-column: auto; grid-row: auto; }
+    :global(.js) .work__picture { order: 0; margin: 0 0 0.4rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .work__panel, .work__name a { transition: none !important; }
+  }
+</style>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLElement>('[data-work-item]')];
+  const wide = matchMedia('(min-width: 64em) and (hover: hover) and (pointer: fine)');
+  let pending = 0;
+  const activate = (item: HTMLElement) => items.forEach((el) => el.toggleAttribute('data-active', el === item));
+  for (const item of items) {
+    item.addEventListener('pointerenter', (event) => {
+      if (event.pointerType !== 'mouse' || !wide.matches) return;
+      clearTimeout(pending);
+      pending = window.setTimeout(() => activate(item), 90);
+    });
+    item.addEventListener('pointerleave', () => clearTimeout(pending));
+    item.addEventListener('focusin', () => activate(item));
+  }
+</script>

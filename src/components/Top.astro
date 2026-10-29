@@ -1,0 +1,119 @@
+---
+import Console from './Console.astro';
+import { person, hero, letter } from '../data/site';
+const mail = `mailto:${person.email}?subject=${encodeURIComponent('Hello from your portfolio')}`;
+---
+
+<div class="split" id="top">
+  <div class="split__stage">
+    <div class="split__field">
+      <Console />
+    </div>
+  </div>
+
+  <div class="split__read">
+    <section class="hero" aria-labelledby="name">
+      <h1 class="name" id="name">
+        <span class="name__ink">{person.name}</span>
+        <span class="name__light" aria-hidden="true">{person.name}</span>
+      </h1>
+      <div class="hero__text">
+        <p class="hero__sentence" data-rise="1">{hero.sentence}</p>
+        <p class="hero__detail" data-rise="2">{hero.detail}</p>
+        <p class="hero__actions" data-rise="3">
+          <a class="button" href={mail}>Email me</a>
+          <a class="link hero__resume" href={person.resume}>Résumé (PDF)</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="letter" id="about" aria-labelledby="about-title">
+      <h2 class="heading" id="about-title" data-reveal>About</h2>
+      <div class="letter__body" data-reveal="2">
+        {letter.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <p class="letter__sign" data-reveal="3">
+        <span class="letter__name">Nikhil Pawar</span>
+        <span class="letter__role">{person.location}</span>
+      </p>
+    </section>
+  </div>
+</div>
+
+<style>
+  /* Desktop: the split. The stage holds the live console on a dark field and stays in view
+     through the hero and the letter; the reading column scrolls beside it. */
+  .split { display: grid; grid-template-columns: 47fr 53fr; }
+  .split__stage { padding: 20px 0 20px 20px; }
+  .split__field {
+    position: sticky; top: 20px;
+    height: calc(max(100svh, 40rem) - 40px);
+    display: grid; place-items: start center;
+    padding: clamp(2.5rem, 9svh, 6rem) clamp(1.5rem, 3vw, 3rem) 0;
+    background: var(--ink);
+  }
+  .split__read { position: relative; min-width: 0; }
+
+  /* The words sit in the space above the name; both stay in normal flow, so wider text
+     spacing grows the hero instead of making them overlap. */
+  .hero { position: relative; min-height: max(100svh, 40rem); display: grid; grid-template-rows: 1fr auto; }
+  .hero__text {
+    grid-row: 1; align-self: center;
+    display: grid; gap: 1.25rem;
+    padding: 5.5rem var(--margin) 2rem clamp(2.5rem, 6vw, 6rem);
+  }
+  .hero__sentence { font-size: var(--step-lead); line-height: 1.3; letter-spacing: -0.01em; max-width: 26ch; font-weight: 450; }
+  .hero__detail { max-width: 40ch; }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; margin-top: 0.5rem; }
+  .hero__resume { display: inline-flex; align-items: center; min-height: 2.75rem; }
+
+  /* The name crosses the stage's edge by 10vw and ends on the right margin. One solid ink per
+     ground: paper over the dark stage, ink over the page. */
+  .name {
+    --over: 10vw;
+    grid-row: 2; position: relative; z-index: 1;
+    margin: 0 var(--margin) 1.25rem calc(var(--over) * -1);
+    font-size: calc((53vw + var(--over) - var(--margin)) / 4.98);
+    font-weight: 380; line-height: 1; letter-spacing: -0.045em;
+    text-transform: lowercase;
+    display: grid; transform-origin: 100% 100%;
+  }
+  .name span { grid-area: 1 / 1; }
+  .name__ink { color: var(--ink); clip-path: inset(-0.2em -0.2em -0.3em var(--over)); }
+  .name__light { color: var(--paper); background: var(--ink); clip-path: inset(-0.2em calc(100% - var(--over)) -0.3em -0.2em); }
+
+  .letter { padding: calc(var(--section) * 0.9) clamp(2.5rem, 6vw, 6rem) calc(var(--section) * 0.45); display: grid; gap: 1.75rem; max-width: calc(34rem + 12vw); }
+  .letter__body { display: grid; gap: 1.1em; max-width: 34rem; }
+  .letter__body p { font-size: var(--step-body); line-height: 1.6; }
+  .letter__sign { display: grid; gap: 0.2rem; }
+  .letter__name { font-size: var(--step-lead); font-weight: 400; line-height: 1.2; }
+  .letter__role { font-size: var(--step-small); color: var(--muted); }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero { view-timeline-name: --hero; }
+      .name { animation: settle linear both; animation-timeline: --hero; animation-range: exit 0% exit 80%; }
+      @keyframes settle { to { transform: scale(0.94); } }
+    }
+  }
+
+  /* Tablet and phone: the console sits on top, the name runs under it, then the words. */
+  @media (max-width: 63.99em) {
+    .split { display: block; }
+    .split__stage { padding: 12px 12px 0; }
+    .split__field { position: relative; top: 0; height: auto; padding: 3.75rem clamp(0.75rem, 4vw, 2.5rem) clamp(0.75rem, 4vw, 2.5rem); place-items: start center; }
+
+    .hero { min-height: 0; padding: 0 1.25rem; display: flex; flex-direction: column; }
+    .name { margin: 0.12em 0 0; font-size: calc((100vw - 2.5rem) / 4.98); }
+    .name__ink { clip-path: none; }
+    .name__light { display: none; }
+    .hero__text { padding: 1rem 0 0; }
+    .hero__sentence { max-width: 30ch; }
+
+    .letter { padding: calc(var(--section) * 0.75) 1.25rem; max-width: none; }
+  }
+  @media (max-width: 63.99em) and (min-width: 40em) {
+    .hero, .letter { padding-inline: var(--margin); }
+    .name { font-size: calc((100vw - 2 * var(--margin)) / 4.98); }
+  }
+</style>

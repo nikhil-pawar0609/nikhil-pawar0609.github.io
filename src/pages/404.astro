@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found, Nikhil Pawar" noindex>
+  <main class="lost">
+    <h1>This page doesn’t exist</h1>
+    <p>The link may be old. Everything is on one page now.</p>
+    <p><a class="button" href="/">Go to the home page</a></p>
+  </main>
+</Base>
+
+<style>
+  .lost { min-height: 100svh; display: grid; align-content: center; gap: 1.25rem; padding: var(--margin); padding-left: max(var(--margin), 22vw); }
+  h1 { font-size: var(--step-head); font-weight: 400; letter-spacing: -0.035em; line-height: 1.02; }
+</style>

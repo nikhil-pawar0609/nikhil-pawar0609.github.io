@@ -1,0 +1,55 @@
+---
+import { record } from '../data/site';
+// Two columns that end together: work, education and courses; then open source, the award and tools.
+const columns = [record.slice(0, 3), record.slice(3)];
+---
+
+<section class="record" id="experience" aria-labelledby="experience-title">
+  <h2 class="heading record__title" id="experience-title" data-reveal>Experience and education</h2>
+  <div class="record__columns">
+    {columns.map((groups, i) => (
+      <div class="record__column" data-reveal={String(i + 2)}>
+        {groups.map((group) => (
+          <div class="record__group">
+            <h3 class="record__group-name">{group.group}</h3>
+            <ul class="record__rows">
+              {group.rows.map((row) => (
+                <li class="record__row">
+                  <span class:list={['record__mark', { 'record__mark--now': row.current }]} aria-hidden="true"></span>
+                  <span class="record__name">{row.href ? <a class="link" href={row.href}>{row.name}</a> : row.name}</span>
+                  <span class="record__value nums">{row.value}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .record { padding: var(--section) var(--margin) calc(var(--section) * 0.75); }
+  .record__title { margin-bottom: 2rem; }
+  .record__columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem clamp(2.5rem, 7vw, 7rem); }
+  .record__column { display: grid; gap: 2.5rem; align-content: start; }
+  .record__group-name { font-size: var(--step-body); font-weight: 400; color: var(--muted); margin-bottom: 0.5rem; }
+  .record__rows { display: grid; }
+  .record__row {
+    display: grid; grid-template-columns: 1rem minmax(0, 1fr) auto; column-gap: 0.6rem; align-items: baseline;
+    min-height: 2.25rem; padding-block: 0.35rem;
+  }
+  .record__mark { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: color-mix(in srgb, var(--ink) 30%, transparent); align-self: center; justify-self: center; }
+  .record__mark--now { background: var(--accent); }
+  .record__name { font-size: var(--step-body); line-height: 1.4; }
+  .record__name a { display: inline-flex; align-items: center; min-height: 2.75rem; }
+  .record__value { font-size: var(--step-small); color: var(--muted); text-align: right; white-space: nowrap; }
+
+  @media (max-width: 63.99em) {
+    .record__columns { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 40em) {
+    .record__row { grid-template-columns: 1rem minmax(0, 1fr); min-height: 2.75rem; }
+    .record__value { grid-column: 2; text-align: left; white-space: normal; }
+  }
+</style>

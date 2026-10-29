@@ -1,0 +1,118 @@
+---
+// Drawn in the page's colours for the projects that have no screen of their own to show:
+// infrastructure, and Rhea's sync path until its new interface is ready. Labels are set large
+// enough to stay at 13px or more when the drawing is shown at phone width.
+import type { Drawing } from '../data/site';
+
+interface Props {
+  kind: Drawing;
+  label: string;
+}
+const { kind, label } = Astro.props;
+---
+
+<svg class="drawing" viewBox="0 0 800 600" role="img" aria-label={label}>
+  <rect class="d-ground" width="800" height="600"></rect>
+  {kind === 'homelab' && (
+    <g>
+      <rect class="d-box" x="40" y="40" width="225" height="72"></rect>
+      <text x="152" y="87" text-anchor="middle">Pull request</text>
+      <rect class="d-box" x="300" y="40" width="200" height="72"></rect>
+      <text x="400" y="87" text-anchor="middle">CI checks</text>
+      <rect class="d-box d-box--ink" x="535" y="40" width="225" height="72"></rect>
+      <text class="d-on-ink" x="648" y="87" text-anchor="middle">Atlantis</text>
+      <path class="d-arrow" d="M265 76 H292 M284 68 l8 8 -8 8 M500 76 H527 M519 68 l8 8 -8 8 M648 112 V164 M640 156 l8 8 8 -8"></path>
+      <text class="d-small" x="632" y="150" text-anchor="end">plan, apply</text>
+
+      <rect class="d-field" x="40" y="172" width="720" height="280"></rect>
+      <text class="d-label" x="64" y="218">Proxmox VE</text>
+      <rect class="d-box d-box--dashed" x="64" y="236" width="356" height="64"></rect>
+      <text x="242" y="279" text-anchor="middle">cloud-init template</text>
+      <text class="d-small" x="440" y="278">full clones</text>
+      <path class="d-arrow d-arrow--soft" d="M179 300 V352 M171 344 l8 8 8 -8 M394 300 V352 M386 344 l8 8 8 -8 M412 300 C 420 330 600 326 615 352 M606 346 l9 6 2 -10"></path>
+      <rect class="d-box" x="64" y="360" width="230" height="68"></rect>
+      <text x="179" y="404" text-anchor="middle">control plane</text>
+      <rect class="d-box" x="314" y="360" width="160" height="68"></rect>
+      <text x="394" y="404" text-anchor="middle">workers</text>
+      <rect class="d-box" x="494" y="360" width="242" height="68"></rect>
+      <text x="615" y="404" text-anchor="middle">services VM</text>
+
+      <path class="d-link" d="M179 428 V520 H320"></path>
+      <text class="d-small" x="194" y="492">Tailscale</text>
+      <rect class="d-box d-box--go" x="320" y="486" width="300" height="68"></rect>
+      <text class="d-on-ink" x="470" y="530" text-anchor="middle">GPU worker</text>
+    </g>
+  )}
+
+  {kind === 'self-healing' && (
+    <g>
+      <text class="d-label" x="56" y="76">NginxRunning</text>
+      <text class="d-small" x="56" y="116">alarm below 1 for 60 s</text>
+      <rect class="d-alarm-band" x="372" y="150" width="132" height="286"></rect>
+      <text class="d-alarm" x="438" y="184" text-anchor="middle">ALARM</text>
+      <path class="d-level" d="M96 220 H744 M96 400 H744"></path>
+      <text class="d-small" x="60" y="230">1</text>
+      <text class="d-small" x="60" y="410">0</text>
+      <path class="d-trace" d="M96 220 H320 V400 H440 V220 H744"></path>
+      <circle class="d-dot-alarm" cx="320" cy="400" r="10"></circle>
+      <circle class="d-dot-go" cx="440" cy="220" r="10"></circle>
+      <text class="d-small" x="744" y="196" text-anchor="end">back to OK</text>
+      <text class="d-small" x="310" y="472" text-anchor="end">nginx stops</text>
+      <text class="d-small" x="520" y="472" text-anchor="middle">Lambda restarts it</text>
+      <text class="d-small" x="56" y="560">Silence counts as failure.</text>
+    </g>
+  )}
+
+  {kind === 'rhea' && (
+    <g>
+      <text class="d-label" x="48" y="70">This device</text>
+      <rect class="d-field" x="40" y="92" width="230" height="300"></rect>
+      <rect class="d-box" x="60" y="116" width="190" height="64"></rect>
+      <text x="155" y="158" text-anchor="middle">New log</text>
+      <path class="d-arrow d-arrow--soft" d="M155 180 V224 M147 216 l8 8 8 -8"></path>
+      <rect class="d-box d-box--ink" x="60" y="232" width="190" height="80"></rect>
+      <text class="d-on-ink" x="155" y="268" text-anchor="middle">Outbox</text>
+      <text class="d-on-ink d-small" x="155" y="299" text-anchor="middle">durable</text>
+      <text class="d-small" x="60" y="366">merge by HLC</text>
+
+      <text class="d-small" x="371" y="214" text-anchor="middle">compare-</text>
+      <text class="d-small" x="371" y="246" text-anchor="middle">and-swap</text>
+      <path class="d-arrow" d="M250 272 H472 M464 264 l8 8 -8 8"></path>
+      <path class="d-arrow d-arrow--soft" d="M472 336 H280 M288 328 l-8 8 8 8"></path>
+      <text class="d-small" x="376" y="378" text-anchor="middle">pull, merge</text>
+
+      <rect class="d-box d-box--go" x="480" y="216" width="280" height="140"></rect>
+      <text class="d-on-ink" x="620" y="260" text-anchor="middle">Supabase</text>
+      <text class="d-on-ink d-small" x="620" y="298" text-anchor="middle">row-level</text>
+      <text class="d-on-ink d-small" x="620" y="332" text-anchor="middle">security, tested</text>
+
+      <path class="d-arrow" d="M620 356 V442 M612 434 l8 8 8 -8"></path>
+      <text class="d-small" x="636" y="408">read-only</text>
+      <rect class="d-box" x="480" y="450" width="280" height="72"></rect>
+      <text x="620" y="497" text-anchor="middle">Partner view</text>
+    </g>
+  )}
+</svg>
+
+<style>
+  .drawing { width: 100%; height: auto; font-family: var(--font); }
+  .d-ground { fill: var(--paper); }
+  .d-field { fill: var(--surface); }
+  .drawing text { fill: var(--ink); font-size: 31px; font-weight: 450; }
+  .drawing .d-small { font-size: 29px; fill: var(--muted); }
+  .drawing .d-label { font-size: 33px; font-weight: 600; }
+  .drawing .d-on-ink { fill: var(--paper); }
+  .drawing .d-alarm { fill: var(--alarm); font-weight: 600; font-size: 29px; }
+  .d-box { fill: var(--paper); stroke: var(--ink); stroke-width: 2.5; }
+  .d-box--ink { fill: var(--ink); stroke: var(--ink); }
+  .d-box--go { fill: var(--accent); stroke: var(--accent); }
+  .d-box--dashed { fill: none; stroke-dasharray: 8 7; }
+  .d-arrow { fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .d-arrow--soft { stroke: var(--muted); stroke-width: 2.5; }
+  .d-link { fill: none; stroke: var(--muted); stroke-width: 2.5; stroke-dasharray: 7 7; }
+  .d-level { fill: none; stroke: color-mix(in srgb, var(--ink) 18%, transparent); stroke-width: 2; stroke-dasharray: 6 8; }
+  .d-trace { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linejoin: round; }
+  .d-alarm-band { fill: color-mix(in srgb, var(--alarm) 12%, transparent); }
+  .d-dot-alarm { fill: var(--alarm); }
+  .d-dot-go { fill: var(--accent); }
+</style>

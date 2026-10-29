@@ -1,0 +1,35 @@
+---
+import { person } from '../data/site';
+const mail = `mailto:${person.email}?subject=${encodeURIComponent('Hello from your portfolio')}`;
+---
+
+<header class="nav">
+  <nav aria-label="Main">
+    <ul>
+      <li class="nav__wide"><a class="link" href="#about">About</a></li>
+      <li><a class="link" href="#work">Projects</a></li>
+      <li class="nav__wide"><a class="link" href="#experience">Experience</a></li>
+      <li><a class="link" href={person.resume}>Résumé</a></li>
+      <li><a class="link nav__action" href={mail}>Email me</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  /* Five plain links top-right; the last is the action. */
+  .nav { position: absolute; z-index: 20; top: clamp(1rem, 2.2vw, 2rem); right: var(--margin); }
+  .nav ul { display: flex; gap: clamp(1rem, 2vw, 1.75rem); list-style: none; margin: 0; padding: 0; }
+  .nav a { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration-color: transparent; }
+  .nav__action { font-weight: 600; }
+  @media (hover: hover) and (pointer: fine) {
+    .nav a:hover { text-decoration-color: currentColor; }
+  }
+  /* Phones and tablets: the links sit over the console's dark field. */
+  @media (max-width: 63.99em) {
+    .nav { left: 0; right: 0; top: 0; padding: 0.9rem 1.25rem; }
+    .nav ul { justify-content: flex-end; }
+    .nav a { color: var(--paper); }
+    .nav a:focus-visible { outline-color: var(--paper); }
+    .nav__wide { display: none; }
+  }
+</style>
