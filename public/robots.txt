@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://aimsotrash.github.io/sitemap-index.xml
+Sitemap: https://nikhil-pawar0609.github.io/sitemap-index.xml

@@ -1,6 +1,6 @@
-# aimsotrash.github.io
+# nikhil-pawar0609.github.io
 
-My portfolio: [aimsotrash.github.io](https://aimsotrash.github.io).
+My portfolio: [nikhil-pawar0609.github.io](https://nikhil-pawar0609.github.io).
 
 A static site built with [Astro](https://astro.build) and deployed to GitHub Pages by
 `.github/workflows/deploy.yml` on every push to `main`. The page ships almost no

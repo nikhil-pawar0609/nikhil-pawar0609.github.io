@@ -17,7 +17,7 @@ export const person = {
   linkedin: 'https://www.linkedin.com/in/nikhil-pawar0609',
   resume: '/Nikhil-Pawar-Resume.pdf',
   location: 'Seattle, WA',
-  site: 'https://aimsotrash.github.io',
+  site: 'https://nikhil-pawar0609.github.io',
 };
 
 export const meta = {

@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://aimsotrash.github.io',
+  site: 'https://nikhil-pawar0609.github.io',
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   build: { inlineStylesheets: 'auto' },
