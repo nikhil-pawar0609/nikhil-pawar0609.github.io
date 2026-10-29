@@ -7,6 +7,7 @@ import cipherlink from '../assets/work/cipherlink.png';
 import dailyBrief from '../assets/work/daily-brief.png';
 import engram from '../assets/work/engram.png';
 import ghostline from '../assets/work/ghostline.png';
+import rhea from '../assets/work/rhea.png';
 
 export const person = {
   name: 'Nikhil Pawar',
@@ -44,7 +45,7 @@ export const figures = [
   { value: '3.5 years', caption: "running the AWS account behind HP’s device telemetry" },
 ];
 
-export type Drawing = 'homelab' | 'self-healing' | 'rhea';
+export type Drawing = 'homelab' | 'self-healing';
 
 export interface Project {
   id: string;
@@ -140,8 +141,8 @@ export const projects: Project[] = [
     stack: 'TypeScript · React · Supabase · IndexedDB',
     code: 'https://github.com/shravanibnikam/rhea-period-tracker',
     live: 'https://shravanibnikam.github.io/rhea-period-tracker/',
-    drawing: 'rhea',
-    alt: "Drawing of Rhea’s sync: logs leave the device’s outbox with a compare-and-swap write to Supabase and reach a read-only partner view.",
+    image: rhea,
+    alt: "Rhea’s partner view: switches that choose what a linked partner sees, beside the card that shows what Maya’s partner would see for a sample cycle.",
   },
   {
     id: 'ghostline',
