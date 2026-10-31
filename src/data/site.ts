@@ -106,7 +106,7 @@ export const projects: Project[] = [
       'Long-term memory for AI agents that forgets on purpose: an MCP server whose memories fade on a forgetting curve unless they are recalled. I replayed six memory policies on LongMemEval and LoCoMo. Keeping everything wins when you can afford it, and strengthening on recall beats plain LRU, modestly.',
     stack: 'Python · MCP · sentence-transformers · NumPy · SQLite · React',
     code: 'https://github.com/aimsotrash/Ebbtide',
-    live: 'https://aimsotrash-engram.vercel.app',
+    live: 'https://aimsotrash-ebbtide.vercel.app',
     image: ebbtide,
     alt: "Ebbtide’s landing page: the headline “Agent memory that fades” with a recall button, a days-without-recall slider and a spaced-rule switch.",
   },
