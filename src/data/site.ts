@@ -5,7 +5,7 @@ import type { ImageMetadata } from 'astro';
 import streamlora from '../assets/work/streamlora.png';
 import cipherlink from '../assets/work/cipherlink.png';
 import dailyBrief from '../assets/work/daily-brief.png';
-import engram from '../assets/work/engram.png';
+import ebbtide from '../assets/work/ebbtide.png';
 import ghostline from '../assets/work/ghostline.png';
 import rhea from '../assets/work/rhea.png';
 
@@ -99,16 +99,16 @@ export const projects: Project[] = [
     alt: "StreamLoRA’s adaptation dashboard: a timeline of drift, promotions, rejections and rollbacks above a decision log of model versions.",
   },
   {
-    id: 'engram',
-    name: 'Engram',
+    id: 'ebbtide',
+    name: 'Ebbtide',
     kind: 'Memory for AI agents',
     summary:
       'Long-term memory for AI agents that forgets on purpose: an MCP server whose memories fade on a forgetting curve unless they are recalled. I replayed six memory policies on LongMemEval and LoCoMo. Keeping everything wins when you can afford it, and strengthening on recall beats plain LRU, modestly.',
     stack: 'Python · MCP · sentence-transformers · NumPy · SQLite · React',
-    code: 'https://github.com/aimsotrash/Engram',
+    code: 'https://github.com/aimsotrash/Ebbtide',
     live: 'https://aimsotrash-engram.vercel.app',
-    image: engram,
-    alt: "Engram’s landing page: the headline “Agent memory that fades” with a recall button, a days-without-recall slider and a spaced-rule switch.",
+    image: ebbtide,
+    alt: "Ebbtide’s landing page: the headline “Agent memory that fades” with a recall button, a days-without-recall slider and a spaced-rule switch.",
   },
   {
     id: 'cipherlink',
@@ -253,7 +253,7 @@ export const record: { group: string; rows: Row[] }[] = [
       { name: 'Apache Airflow, Redshift, Hive, RDS', value: 'HP' },
       { name: 'CloudWatch, PagerDuty, Prometheus, Grafana', value: 'HP, homelab-infra' },
       { name: 'Python, Bash, TypeScript, SQL', value: 'HP, projects' },
-      { name: 'FastAPI, React, SQLite, sentence-transformers', value: 'Daily-Brief, Engram, Cipherlink' },
+      { name: 'FastAPI, React, SQLite, sentence-transformers', value: 'Daily-Brief, Ebbtide, Cipherlink' },
     ],
   },
 ];
