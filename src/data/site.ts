@@ -100,15 +100,15 @@ export const projects: Project[] = [
   },
   {
     id: 'ebbtide',
-    name: 'Ebbtide',
+    name: 'Ebbtide MCP',
     kind: 'Memory for AI agents',
     summary:
       'Long-term memory for AI agents that forgets on purpose: an MCP server whose memories fade on a forgetting curve unless they are recalled. I replayed six memory policies on LongMemEval and LoCoMo. Keeping everything wins when you can afford it, and strengthening on recall beats plain LRU, modestly.',
-    stack: 'Python · MCP · sentence-transformers · NumPy · SQLite · React',
+    stack: 'Python · MCP · ONNX Runtime · NumPy · SQLite · React',
     code: 'https://github.com/aimsotrash/Ebbtide',
     live: 'https://aimsotrash-ebbtide.vercel.app',
     image: ebbtide,
-    alt: "Ebbtide’s landing page: the headline “Agent memory that fades” with a recall button, a days-without-recall slider and a spaced-rule switch.",
+    alt: "Ebbtide MCP’s landing page: the headline “Agent memory that fades” with a recall button, a days-without-recall slider and a spaced-rule switch.",
   },
   {
     id: 'cipherlink',
@@ -253,7 +253,7 @@ export const record: { group: string; rows: Row[] }[] = [
       { name: 'Apache Airflow, Redshift, Hive, RDS', value: 'HP' },
       { name: 'CloudWatch, PagerDuty, Prometheus, Grafana', value: 'HP, homelab-infra' },
       { name: 'Python, Bash, TypeScript, SQL', value: 'HP, projects' },
-      { name: 'FastAPI, React, SQLite, sentence-transformers', value: 'Daily-Brief, Ebbtide, Cipherlink' },
+      { name: 'FastAPI, React, SQLite, ONNX Runtime', value: 'Daily-Brief, Ebbtide MCP, Cipherlink' },
     ],
   },
 ];
